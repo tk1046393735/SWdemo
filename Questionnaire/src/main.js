@@ -5,6 +5,7 @@ import App from './App'
 import router from './router'
 import iView from 'view-design'
 import 'view-design/dist/styles/iview.css'
+import '@/css/Style.css'
 
 Vue.config.productionTip = false
 Vue.use(iView);

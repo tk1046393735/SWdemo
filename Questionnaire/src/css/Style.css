@@ -1,0 +1,44 @@
+h2 {
+    text-align: center;
+    margin: 30px 0;
+    color: #1ea0fa;
+    font-size: 24px;
+}
+div {
+    font-family:'微软雅黑';
+}
+.ivu-form .ivu-form-item-label {
+    font-size: 16px;
+    font-weight:bold;
+}
+.ivu-radio-wrapper {
+    font-size: 16px;
+}
+.ivu-checkbox-wrapper {
+    font-size: 16px;
+}
+.ivu-form-item-error-tip {
+    left: 20px;
+}
+/* .ivu-btn {
+    width: 80%;
+    margin: 0 0 0 12%;
+} */
+.body {
+    width: 100%;
+    padding: 0 40px 0 20px;
+}
+.interval {
+    margin: 0 0 40px 0;
+}
+.move_l {
+    margin: 0 0 0 20px;
+}
+.in1 {
+    width: 100%;
+    margin: 0 0 0 20px;
+}
+.in2 {
+    width: 100%;
+    margin: 0 0 0 20px;
+}
