@@ -3,15 +3,21 @@
         <Layout>
             <Header>
                 <Menu mode="horizontal" theme="dark" active-name="1">
-                    <div class="layout-logo"></div>
+                    <div class="layout-logo">
+                        <img src="@/assets/SW.jpg" style="width: 120px;height: 40px;margin: 0 0 0 -20px;">
+                    </div>
                     <div class="layout-nav">
                         <MenuItem name="1">
-                            <Icon type="ios-navigate"></Icon>
+                            <Icon type="ios-add-circle-outline" />
                             创建问卷
                         </MenuItem>
                         <MenuItem name="2">
-                            <Icon type="ios-keypad"></Icon>
-                            Item 2
+                            <Icon type="ios-podium-outline" />
+                            汇总统计
+                        </MenuItem>
+                        <MenuItem name="3">
+                            <Icon type="ios-book-outline" />
+                            问卷反馈
                         </MenuItem>
                     </div>
                 </Menu>
@@ -22,7 +28,7 @@
                         <div class="m_menu">
                         <Submenu name="1">
                             <template slot="title">
-                                <Icon type="ios-navigate"></Icon>
+                                <Icon type="ios-add-circle-outline" />
                                 创建问卷
                             </template>
                             <router-link to="/handel">
@@ -31,11 +37,21 @@
                         </Submenu>
                         <Submenu name="2">
                             <template slot="title">
-                                <Icon type="ios-keypad"></Icon>
-                                Item 2
+                                <Icon type="ios-podium-outline" />
+                                汇总统计
                             </template>
-                            <MenuItem name="2-1">Option 1</MenuItem>
-                            <MenuItem name="2-2">Option 2</MenuItem>
+                            <router-link to="/statistics">
+                                <MenuItem name="2-1">问卷汇总统计</MenuItem>
+                            </router-link>
+                        </Submenu>
+                        <Submenu name="3">
+                            <template slot="title">
+                                <Icon type="ios-book-outline" />
+                                问卷反馈
+                            </template>
+                            <router-link to="/feedback">
+                                <MenuItem name="3-1">问卷反馈</MenuItem>
+                            </router-link>
                         </Submenu>
                         </div>
                     </Menu>
@@ -48,7 +64,7 @@
                     </Content>
                 </Layout>
             </Layout>
-            <Footer class="layout-footer-center">2011-2016 &copy; TalkingData</Footer>
+            <Footer class="layout-footer-center">2020-2021 &copy; TestVersions</Footer>
         </Layout>
     </div>
 </template>
@@ -60,7 +76,7 @@
 </script>
 
 <style scoped>
-.layout{
+/* .layout{
     border: 1px solid #d7dde4;
     background: #f5f7f9;
     position: relative;
@@ -78,7 +94,7 @@
     left: 20px;
 }
 .m_sider {
-    height: 530px;
+    height: auto;
 }
 .layout-nav{
     width: 420px;
@@ -87,5 +103,5 @@
 }
 .layout-footer-center{
     text-align: center;
-}
+} */
 </style>

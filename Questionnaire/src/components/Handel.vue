@@ -1,8 +1,23 @@
 <template>
     <div class="h_body">
-        <div class="h_btn">
-            <Button type="primary" style="margin-right: 5px" @click="add = true"><Icon type="ios-add"/>新增</Button>
+        <div>
+            <Row>
+                <Col span="18">
+                    <div class="h_btn">
+                        <Button type="primary" style="margin-right: 5px" @click="add = true"><Icon type="ios-add"/>新增</Button>
+                    </div>
+                </Col>
+                <div class="h_serch">
+                    <Col span="4">
+                        <Input v-model="value" placeholder="输入问卷名称" style="padding: 0 10px 0 0;" />
+                    </Col>
+                    <Col span="2">
+                        <Button type="primary" @click="search1">搜索</Button>
+                    </Col>
+                </div>  
+            </Row>
         </div>
+        
 
         <Table border :columns="columns12" :data="data6">
             <template slot-scope="{ row }" slot="name">
@@ -11,10 +26,12 @@
             <template slot-scope="{ row, index }" slot="action">
                 <div class="butn">
                     <Button type="primary" size="small" style="margin-right: 5px" @click="search = true"><Icon type="ios-search-outline" />预览</Button>
-                    <Button type="success" size="small"><Icon type="ios-brush-outline" />编辑</Button>
+                    <router-link to="/edit">
+                        <Button type="success" size="small"><Icon type="ios-brush-outline" />编辑</Button>
+                    </router-link>
                     <Button type="error" size="small" @click="remove(index)"><Icon type="ios-close" />删除</Button>
                 </div>
-            </template>
+            </template>        
         </Table>
         
         <Modal
@@ -22,7 +39,7 @@
         title="新增"
         @on-ok="handleSubmitadd('formCustom')"
         @on-cancel="handleReset('formCustom')">
-            <Form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="90">
+            <Form ref="formCustom" :model="formCustom" :label-width="90">
                 <FormItem label="问卷名称:" prop="name">
                     <Input type="text" v-model="formCustom.name" placeholder="请输入名称" />
                 </FormItem>
@@ -35,23 +52,15 @@
         <Modal
         v-model="search"
         title="预览"
-
-        >
-            <!-- <Form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="90">
-                <FormItem label="问卷名称:" prop="name">
-                    <Input type="text" v-model="formCustom.name" placeholder="请输入名称" />
-                </FormItem>
-                <FormItem label="问卷描述:" prop="address">
-                    <Input type="text" v-model="formCustom.address" placeholder="请输入描述" />
-                </FormItem>
-            </Form> -->
-            <Form></Form>
+        ok-text="关闭"
+        cancel-text=" ">
+            <Form1></Form1>
         </Modal>
     </div>
 </template>
 
 <script>
-import From from '@/page/From'
+import Form1 from '@/page/Form'
     export default {
         data () {
             return {
@@ -111,7 +120,7 @@ import From from '@/page/From'
             }
         },
         components: {
-            From
+            Form1
         },
         methods: {
             handleSubmitadd (name) {
@@ -128,19 +137,35 @@ import From from '@/page/From'
                     }
                 })
             },
-            // show (index) {
-            //     this.$Modal.info({
-            //         title: 'User Info',
-            //         content: `Name：${this.data6[index].name}<br>Address：${this.data6[index].address}`
-            //     })
-            // },
             remove (index) {
+                this.$Message.success('删除成功');
                 this.data6.splice(index, 1);
             },
             handleReset (name) {
                 this.$refs[name].resetFields();
                 this.$Message.info('取消操作');
             },
+            search1() {
+                // 获取表格数据
+                var len = this.data6;
+                // 设置一个空的数组
+                var arr = [];
+                // 循环遍历
+                for (var i in len) {
+                    // if判断  如果文本框中的值等于表格中name的值 输出
+                    if (len[i].name == this.value) {
+                        arr.push(len[i]);
+                    // 如果等于空就给他全部数据
+                    } else if (this.value == "") {
+                        // this.data1 = this.data7;
+                        // this.data1 = testData.data6;
+                        
+                    }
+                // 将查找出来的数据给表格
+                this.data6 = arr;
+                }
+            }
+            
         }
     }
 </script>
@@ -148,6 +173,9 @@ import From from '@/page/From'
 <style scoped>
 .h_btn {
     margin: 10px 0 5px 0px;
+}
+.h_serch {
+    margin: 10px 0 0 0;
 }
 </style>
 

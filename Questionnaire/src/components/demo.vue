@@ -367,13 +367,13 @@
                         arr.push(len[i]);
                     // 如果等于空就给他全部数据
                     } else if (this.value == "") {
-                        // this.data1 = this.data7;
-                        // this.data1 = testData.data6;
+                        this.data1 = this.data7;
+                        this.data1 = testData.data6;
                     return;
                     }
                 }
                 // 将查找出来的数据给表格
-                // this.data1 = arr;
+                this.data1 = arr;
             },
             handleReset (name) {
                 this.$refs[name].resetFields();
