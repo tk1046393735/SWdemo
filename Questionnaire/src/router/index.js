@@ -4,9 +4,11 @@ import Form from '@/page/Form'
 import management from '@/page/management'
 import handel from '@/components/Handel'
 import demo from '@/components/demo'
-import edit from '@/components/edit'
+import edit from '@/components/Edit'
 import statistics from '@/components/Statistics'
 import feedback from '@/components/Feedback'
+import newsurvey from '@/components/NewSurvey'
+import details from '@/components/Details'
 
 Vue.use(Router)
 
@@ -34,7 +36,7 @@ export default new Router({
           component: demo
         },
         {
-          path: '/edit',
+          path: '/edit/:id',
           name: 'edit',
           component: edit
         },
@@ -47,8 +49,18 @@ export default new Router({
           path: '/feedback',
           name: 'feedback',
           component: feedback
+        },
+        {
+          path: '/new',
+          name: 'new',
+          component: newsurvey
         }
       ]
+    },
+    {
+      path: '/details',
+      name: 'details',
+      component: details
     }
   ]
 })

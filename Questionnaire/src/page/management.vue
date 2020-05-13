@@ -6,7 +6,7 @@
                     <div class="layout-logo">
                         <img src="@/assets/SW.jpg" style="width: 120px;height: 40px;margin: 0 0 0 -20px;">
                     </div>
-                    <div class="layout-nav">
+                    <!-- <div class="layout-nav">
                         <MenuItem name="1">
                             <Icon type="ios-add-circle-outline" />
                             创建问卷
@@ -19,7 +19,7 @@
                             <Icon type="ios-book-outline" />
                             问卷反馈
                         </MenuItem>
-                    </div>
+                    </div> -->
                 </Menu>
             </Header>
             <Layout>
@@ -34,6 +34,9 @@
                             <router-link to="/handel">
                                 <MenuItem name="1-1">问卷列表</MenuItem>
                             </router-link>
+                            <!-- <router-link to="/new">
+                                <MenuItem name="1-2">创建问卷</MenuItem>
+                            </router-link> -->
                         </Submenu>
                         <Submenu name="2">
                             <template slot="title">
