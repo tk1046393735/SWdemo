@@ -3,37 +3,63 @@
     <div class="headline">
       <h2>问卷调查</h2>
     </div>
-    <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" label-position="top">
+    <Form :model="formValidate" label-position="top">
       <div >
         <div class="f_title">
           <FormItem prop="title">
-              <H1 v-model="formValidate.title"></H1>
+              <H1 v-text="questionnaire.title"></H1>
           </FormItem>
         </div>
         <div class="f_titlemini">
           <FormItem prop="titleMini">
-            <!-- <Row>
-              <Col span="20">
-                <p>(</p>
-              </Col>
-              <Col span="2"> -->
-                <H3 v-model="formValidate.titleMini"></H3>
-              <!-- </Col>
-              <Col span="2" style="margin-left: -390px;">
-                <p>)</p>
-              </Col>
-            </Row>  -->
+              <H3 v-text="questionnaire.titleMini"></H3>
           </FormItem>
         </div>
         <div class="f_content">
           <FormItem prop="content">
-              <P v-model="formValidate.content"></P>
+              <P v-text="questionnaire.content"></P>
           </FormItem>
         </div>
       </div>
       
-      <div >
-          <div class="interval">
+      <div v-for="(item, index) in dataList" :key="index">
+           <div class="interval" v-if="item.type=='1'">
+            <FormItem :label="item.body" prop="body">
+              <RadioGroup v-model="item.id">
+                <Radio label="正确" value="0"></Radio>
+                <Radio label="错误" value="1"></Radio>
+              </RadioGroup>
+            </FormItem>
+          </div>
+          <div class="interval" v-if="item.type=='2'">
+            <FormItem :label="item.body" prop="body">
+                 <RadioGroup :model="item.id" vertical>
+                   <div v-for="(op,index1) in item.list" :key="index1" >
+                    <Radio :label="op.op+'、'+op.content" :value="op.questionId"></Radio>
+                   </div>
+                </RadioGroup>
+            </FormItem>
+          </div>
+          <div class="interval" v-if="item.type=='3'">
+            <FormItem :label="item.body" prop="body">
+                 <CheckboxGroup  :model="item.id" vertical>
+                   <div v-for="(op,index1) in item.list" :key="index1" >
+                    <Checkbox  :label="op.op+'、'+op.content" :value="op.questionId"></Checkbox>
+                   </div>
+                </CheckboxGroup>
+            </FormItem>
+          </div>
+          <div class="interval" v-if="item.type=='4'">
+          <FormItem :label="item.body" prop="answerBy">
+              <div v-for="(op,index1) in item.list" :key="index1" >
+                  <Input class="in1" :model="item.id"/>
+              </div>
+          </FormItem>
+        </div>
+      </div>
+
+      <div v-if="questionnaire.anonymousFlag=='1'">
+        <div class="interval">
           <FormItem label="答题人" prop="answerBy">
               <Input class="in1" v-model="formValidate.answerBy"/>
           </FormItem>
@@ -60,83 +86,10 @@
       
       <FormItem>
         <div class="btn">
-          <Button type="primary" @click="handleSubmit('formValidate')">提交</Button>
+          <Button type="primary" @click="submitAnswer('formValidate')">提交</Button>
         </div>
       </FormItem>
-      <!-- <div class="interval">
-        <FormItem label="1.你的性别是:" prop="radio_1">
-              <RadioGroup v-model="vertical" vertical> 
-                <div class="move_l">
-                  <Radio label="boy" size=large> 
-                    <span>男</span>
-                  </Radio>
-
-                  <Radio label="gril" size=large>
-                    <span>女</span>
-                  </Radio>
-                </div>
-              </RadioGroup>
-        </FormItem>
-      </div> -->
-
-      <!-- <div class="interval">
-        <FormItem label="2.你的年级是:" prop="radio_1">
-              <RadioGroup v-model="vertical" vertical>
-                <div class="move_l">
-                  <Radio label="one" size=large>
-                    <span>一年级</span>
-                  </Radio>
-  
-                  <Radio label="two" size=large>
-                    <span>二年级</span>
-                  </Radio>
-
-                  <Radio label="three" size=large>
-                    <span>三年级</span>
-                  </Radio>
-                </div>
-              </RadioGroup>
-        </FormItem>
-      </div> -->
-
-      <!-- <div class="interval">
-        <FormItem label="3.你的爱好是:" prop="radio_1">
-              <RadioGroup v-model="vertical" vertical> 
-                <div class="move_l">
-                  <Radio label="play" size=large> 
-                    <span>娱乐</span>
-                  </Radio>
-
-                  <Radio label="other" size=large>
-                    <span>其他</span><br>
-                  </Radio>
-                </div>
-              </RadioGroup><br>
-              <Input class="in1" v-model="formValidate.radio_1"/>
-        </FormItem>
-      </div> -->
-      <!-- <div class="interval">
-        <FormItem label="6.喜欢吃的食物是:" prop="checkbox_1">
-          <div class="move_l">
-            <Checkbox v-model="single1">香蕉</Checkbox><br>
-            <Checkbox v-model="single2">苹果</Checkbox><br>
-            <Checkbox v-model="single3">梨</Checkbox><br>
-            <Checkbox v-model="single4">榴莲</Checkbox>
-          </div>
-        </FormItem>
-      </div>
-
-      <div class="interval">
-        <FormItem label="7.喜欢玩的游戏是:" prop="checkbox_1">
-          <div class="move_l">
-            <Checkbox v-model="single5">tencent</Checkbox><br>
-            <Checkbox v-model="single6">steam</Checkbox><br>
-            <Checkbox v-model="single7">bizzard</Checkbox><br>
-            <Checkbox v-model="single8">其他</Checkbox><br>
-          </div>
-          <Input class="in2" v-model="formValidate.checkbox_1"/>
-        </FormItem>
-      </div> -->
+      
     </Form>
   </div>
 </template>
@@ -151,6 +104,7 @@ export default {
             return {
                 value: '',
                 vertical: 'false',
+                questionnaire:{},
                 // single1: 'false',
                 // single2: 'false',
                 // single3: 'false',
@@ -160,13 +114,6 @@ export default {
                 // single7: 'false',
                 // single8: 'false',
                 formValidate: {
-                    radio_1: '',
-                    nswerBy: '',
-                    answerCompany: '',
-                    answerJob: '',
-                    answerTime: '',
-                    // checkbox_1: '',
-                    
                 },
                 ruleValidate: {
                     radio_1: [
@@ -184,21 +131,28 @@ export default {
                     // checkbox_1: [
                     //     { required: true, message: '请输入内容', trigger: 'blur' }
                     // ],
-                }
+                },
+                dataList:[]
             }
         },
         mounted() {
           this.addDate();
         },
         methods: {
+          submitAnswer (name) {
+            var vm = this;
+              console.log(vm.$refs.item);
+          },
           addDate() {
+                var vm = this;
+                var qnId = vm.$route.params.id;
                 axios({
                   method: 'get',
-                  url: 'http://101.132.123.158:8080/questionnaire/qn/{qnId}/question/details',
+                  url: 'http://101.132.123.158:8080/questionnaire/qn/'+ qnId +'/question/details',
                 }).then(function(res) {
-                  console.log(res);
-                  var vm = this;
-                  vm.formValidate = res.data.data;
+                  var data = res.data.data;
+                  vm.questionnaire = data;
+                  vm.dataList = data.list;
                 }).catch(function(err) {
                   console.log(err);
                 })

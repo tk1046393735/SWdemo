@@ -44,10 +44,40 @@
                     <Input type="text" v-model="formCustom.body" placeholder="请输入问题描述" />
                 </FormItem>
                 <FormItem label="问题类型:" prop="type">
-                    <Select v-model="formCustom.type" placeholder="请选择" @on-select="creatOptions">
-                        <Option v-for="item in questionTypeList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                    <Select v-model="formCustom.type" placeholder="请选择" @on-select="changeType">
+                        <Option v-for="item in questionTypeList" :value="item.value" :key="item.value" >{{ item.label }}</Option>
                     </Select>
                 </FormItem>
+
+                <div style="margin-left: 10px;">
+                    <template v-if="questionType == '2'">
+                        <Form ref="formDynamic" :model="formDynamic" :label-width="80" style="width: 300px">
+                            <FormItem
+                                    v-for="(item, index) in formDynamic.items"
+                                    v-if="item.status"
+                                    :key="index"
+                                    :label="'选项:'"
+                                    :prop="'items.' + index + '.value'"
+                                    :rules="{required: true, message: '选项内容不能为空', trigger: 'blur'}">
+                                <Row>
+                                    <Col span="18">
+                                        <Input type="text" v-model="item.value" placeholder="请输入选项" />
+                                    </Col>
+                                    <Col span="4" offset="1">
+                                        <Button @click="handleRemove(index)">移除选项</Button>
+                                    </Col>
+                                </Row>
+                            </FormItem>
+                            <FormItem>
+                                <Row>
+                                    <Col span="12">
+                                        <Button type="dashed" long @click="handleAdd" icon="md-add">添加选项</Button>
+                                    </Col>
+                                </Row>
+                            </FormItem>
+                        </Form>
+                    </template>
+                </div>
                 
             </Form>
         </Modal>
@@ -75,6 +105,17 @@ import axios from 'axios'
                 add: false,
                 search: false,
                 value: '',
+                questionType: '',
+                index: 1,
+                formDynamic: {
+                    items: [
+                        {
+                            value: '',
+                            index: 1,
+                            status: 1
+                        }
+                    ]
+                },
                 formCustom: {
                     body: '',
                     type: ''  
@@ -125,45 +166,70 @@ import axios from 'axios'
             console.log(this.$route.params.id);
         },
         methods: {
-             handleSubmitadd (name) {
+            //  handleSubmit (name) {
+            //     this.$refs[name].validate((valid) => {
+            //         if (valid) {
+            //             this.$Message.success('Success!');
+            //         } else {
+            //             this.$Message.error('Fail!');
+            //         }
+            //     })
+            // },
+            // handleReset (name) {
+            //     this.$refs[name].resetFields();
+            // },
+            handleAdd () {
+                this.index++;
+                this.formDynamic.items.push({
+                    value: '',
+                    index: this.index,
+                    status: 1
+                });
+            },
+            handleRemove (index) {
+                this.formDynamic.items[index].status = 0;
+            },
+            handleSubmitadd (name) {
                 var self = this;
                 this.$refs[name].validate(valid => {
                     if (valid) {
                         // 获取需要渲染到页面中的数据
-                        var params = JSON.parse(JSON.stringify(self.formCustom));
-                        console.log(self.formCustom)
-                        var qnId = this.$route.params.id;
+                        var data = self.formCustom;
+                        var qnId = self.$route.params.id;
+                        var childsObj = self.formDynamic.items;
+                        var childs = [];
+                        for(var i=0;i<childsObj.length;i++){
+                            var child = {
+                                op:i+1,
+                                content:childsObj[i].value
+                            };
+                            childs.push(child);
+                        }
+                        data.list = childs;
                         axios({
                             method: 'post',
                             url: 'http://101.132.123.158:8080/questionnaire/qn/'+ qnId +'/question/create',
-                            data: self.formCustom
+                            data: data
                         }).then(function(res) {
-                            console.log(res);
+                            var d = res.data;
+                            if(d.code==0){
+                                 self.$Message.success(d.msg);
+                            }else{
+                                 self.$Message.error(d.msg);
+                            }
                         }).catch(function(err) {
                             console.log(err);
                         }) 
-                        self.$Message.success("新增成功!");
-                    } else {
-                        this.$Message.error('新增失败!');
                     }
                 })
             },
-            creatOptions(data) {
-                console.log(data.value);
+            changeType(data) {
                 var typeValue = data.value;
-                switch(typeValue){
-                    case '1': 
-                        
-                        break
-                    case '2':
-
-                        break
-                    case '3':
-                        
-                        break
-                    case '4':
-
-                        break
+                console.log(data.value);
+                if(typeValue == '2'||typeValue == '3') {
+                    this.questionType = 2;
+                }else{
+                    this.questionType = 1; 
                 }
             },
             remove (index) {
@@ -174,38 +240,9 @@ import axios from 'axios'
                 this.$refs[name].resetFields();
                 this.$Message.info('取消操作');
             },
-            search1() {
-                // 获取表格数据
-                var len = this.data6;
-                // 设置一个空的数组
-                var arr = [];
-                // 循环遍历
-                for (var i in len) {
-                    // if判断  如果文本框中的值等于表格中name的值 输出
-                    if (len[i].name == this.value) {
-                        arr.push(len[i]);
-                    // 如果等于空就给他全部数据
-                    } else if (this.value == "") {
-                        let vm = this;
-                        let url = "/static/Handel_Data.json";
-                        axios.get(url).then(function(response) {
-                            vm.ajaxHistoryData = response.data;
-                            vm.data6 = vm.ajaxHistoryData;
-                            // vm.dataCount = response.data.length;
-                            // if(vm.dataCount < vm.pageSize) {
-                            //     vm.data6 = vm.ajaxHistoryData;
-                            // } else {
-                            //     vm.data6 = vm.ajaxHistoryData.slice(0, vm.pageSize);
-                            // }
-                        })
-                    }
-                // 将查找出来的数据给表格
-                this.data6 = arr;
-                }
-            },
             addlist() {
                 var vm = this;
-                var qnId = this.$route.params.id;
+                var qnId = vm.$route.params.id;
                 var url = 'http://101.132.123.158:8080/questionnaire/qn/' + qnId + '/question/list'
                 axios.get(url).then(function(res) {
                     console.log(res.data.data);
@@ -214,15 +251,6 @@ import axios from 'axios'
                     console.log(err);
                 })
             }
-            //获取后台数据
-            // add123() {
-            //     var vm = this;
-            //     var url = "http://101.132.123.158:8080/questionnaire/qn/{qnId}/question/details";
-            //     axios.get(url).then(function(response) {
-            //         vm.ajaxHistoryData = response.data;
-            //         vm.data6 = vm.ajaxHistoryData;
-            //     })
-            // }
         }
     }
 </script>

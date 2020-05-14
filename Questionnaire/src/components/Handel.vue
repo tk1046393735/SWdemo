@@ -172,7 +172,8 @@ import axios from 'axios'
                 console.log(data);
             },
             gotopage(id) {
-                this.$router.push('/edit/' + id) ;
+                this.$router.push('/edit/' + id);
+                this.$router.push('/' + id);
             },
             handleSubmitadd (name) {
                 var self = this;
