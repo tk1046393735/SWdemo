@@ -9,15 +9,21 @@ import statistics from '@/components/Statistics'
 import feedback from '@/components/Feedback'
 import newsurvey from '@/components/NewSurvey'
 import details from '@/components/Details'
+import thank from '@/components/Thank'
 
 Vue.use(Router)
 
 export default new Router({
   routes: [
     {
-      path: '/:id',
+      path: '/form/:id',
       name: 'Form',
       component: Form
+    },
+    {
+      path: '/thank',
+      name: 'thank',
+      component: thank
     },
     {
       path: '/management',

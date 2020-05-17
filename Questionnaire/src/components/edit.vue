@@ -12,7 +12,7 @@
                         <Input v-model="value" placeholder="输入问卷名称" style="padding: 0 10px 0 0;" />
                     </Col>
                     <Col span="2">
-                        <Button type="primary" @click="search1">搜索</Button>
+                        <Button type="primary" @click="">搜索</Button>
                     </Col>
                 </div>  
             </Row>
@@ -25,7 +25,7 @@
             
             <template slot-scope="{ row, index }" slot="action">
                 <div class="butn">
-                    <Button type="primary" size="small" style="margin-right: 5px" @click="search = true"><Icon type="ios-search-outline" />预览</Button>
+                    <!-- <Button type="primary" size="small" style="margin-right: 5px" @click=""><Icon type="ios-search-outline" />预览</Button> -->
                     <router-link to="/edit">
                         <Button type="success" size="small"><Icon type="ios-brush-outline" />编辑</Button>
                     </router-link>
@@ -82,20 +82,20 @@
             </Form>
         </Modal>
 
-        <Modal
+        <!-- <Modal
         v-model="search"
         title="预览"
         ok-text="关闭"
         cancel-text=" ">
-            <Form1></Form1>
-        </Modal>
+            
+        </Modal> -->
 
 
     </div>
 </template>
 
 <script>
-import Form1 from '@/page/Form'
+// import Form1 from '@/page/Form'
 import axios from 'axios'
 
     export default {
@@ -158,9 +158,9 @@ import axios from 'axios'
                 model1: ''
             }
         },
-        components: {
-            Form1
-        },
+        // components: {
+        //     Form1
+        // },
         mounted() {
             this.addlist();
             console.log(this.$route.params.id);
@@ -198,12 +198,25 @@ import axios from 'axios'
                         var qnId = self.$route.params.id;
                         var childsObj = self.formDynamic.items;
                         var childs = [];
-                        for(var i=0;i<childsObj.length;i++){
-                            var child = {
-                                op:i+1,
-                                content:childsObj[i].value
+                        if(data.type=='1'){
+                            var yes = {
+                                op:'0',
+                                content:'正确'
                             };
-                            childs.push(child);
+                            childs.push(yes);
+                            var no = {
+                                op:'1',
+                                content:'错误'
+                            };
+                            childs.push(no);
+                        }else{
+                            for(var i=0;i<childsObj.length;i++){
+                                var child = {
+                                    op:i+1,
+                                    content:childsObj[i].value
+                                };
+                                childs.push(child);
+                            }
                         }
                         data.list = childs;
                         axios({
@@ -214,6 +227,7 @@ import axios from 'axios'
                             var d = res.data;
                             if(d.code==0){
                                  self.$Message.success(d.msg);
+                                 location.reload();
                             }else{
                                  self.$Message.error(d.msg);
                             }

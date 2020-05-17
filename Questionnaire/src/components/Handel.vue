@@ -25,7 +25,7 @@
             
             <template slot-scope="{ row }" slot="action">
                 <div class="butn">
-                    <Button type="primary" size="small" style="margin-right: 5px" @click="search = true"><Icon type="ios-search-outline" />预览</Button>
+                    <Button type="primary" size="small" style="margin-right: 5px" @click="openDetails(row.id)"><Icon type="ios-search-outline" />预览</Button>
                     <!-- <router-link to="/edit"> -->
                         <Button type="success" size="small" @click="gotopage(row.id)"><Icon type="ios-brush-outline" />编辑</Button>
                     <!-- </router-link> -->
@@ -94,19 +94,19 @@
             </Form>
         </Modal>
 
-        <Modal
+        <!-- <Modal
         v-model="search"
         fullscreen
         title="预览"
         ok-text="关闭"
         cancel-text=" ">
             <Form1></Form1>
-        </Modal>
+        </Modal> -->
     </div>
 </template>
 
 <script>
-import Form1 from '@/page/Form'
+// import Form1 from '@/page/Form'
 import axios from 'axios'
 
     export default {
@@ -116,7 +116,6 @@ import axios from 'axios'
                 search: false,
                 value: '',
                 formCustom: {
-                    
                     title: '',
                     titleMini: '',
                     content: '',
@@ -127,10 +126,6 @@ import axios from 'axios'
                     textarea: ''
                 },
                 columns12: [
-                    // {
-                    //     title: '问卷序号',
-                    //     key: 'qnId'
-                    // },
                     {
                         title: '问卷主题',
                         key: 'title'
@@ -161,11 +156,12 @@ import axios from 'axios'
                 data6: []
             }
         },
-        components: {
-            Form1
-        },
+        // components: {
+        //     Form1
+        // },
         mounted() {
             this.addDate();
+            // this.$router.push('/form' + id);
         },
         methods: {
             tackdata(data) {
@@ -173,7 +169,6 @@ import axios from 'axios'
             },
             gotopage(id) {
                 this.$router.push('/edit/' + id);
-                this.$router.push('/' + id);
             },
             handleSubmitadd (name) {
                 var self = this;
@@ -188,6 +183,7 @@ import axios from 'axios'
                             data: self.formCustom
                         }).then(function(res) {
                             console.log(res);
+                            location.reload();
                         }).catch(function(err) {
                             console.log(err);
                         }) 
@@ -210,6 +206,10 @@ import axios from 'axios'
             handleReset (name) {
                 this.$refs[name].resetFields();
                 this.$Message.info('取消操作');
+            },
+            openDetails(id){
+                //查看详情
+                this.$router.push({path:'/form/'+ id})
             },
             search1() {
                 // 获取表格数据

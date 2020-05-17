@@ -1,11 +1,23 @@
 h2 {
     text-align: center;
-    margin: 30px 0;
-    color: #1ea0fa;
-    font-size: 24px;
+    margin: 20px 0;
+    /* color: #1ea0fa; */
+    font-size: 30px;
 }
 div {
     font-family:'微软雅黑';
+}
+* {
+    touch-action: pan-y;
+}
+.ivu-radio-inner {
+    border: 1px solid gray;
+} 
+.ivu-checkbox-inner {
+    border: 1px solid gray;
+}
+.ivu-input {
+    border: 1px solid gray;
 }
 .ivu-form .ivu-form-item-label {
     font-size: 16px;

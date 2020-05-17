@@ -1,86 +1,93 @@
 <template>
-    <div>
-        <Checkbox-group v-model="tableColumnsChecked" @on-change="changeTableColumns">
-            <Checkbox label="show">Show</Checkbox>
-        </Checkbox-group>
-        <Table :data="tableData2" :columns="tableColumns2" border></Table>
-    </div>
+    <Form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="80">
+        <FormItem label="Password" prop="passwd">
+            <Input type="password" v-model="formCustom.passwd"></Input>
+        </FormItem>
+        <FormItem label="Confirm" prop="passwdCheck">
+            <Input type="password" v-model="formCustom.passwdCheck"></Input>
+        </FormItem>
+        <FormItem label="Age" prop="age">
+            <Input type="text" v-model="formCustom.age" number></Input>
+        </FormItem>
+        <FormItem>
+            <Button type="primary" @click="handleSubmit('formCustom')">Submit</Button>
+            <Button @click="handleReset('formCustom')" style="margin-left: 8px">Reset</Button>
+        </FormItem>
+    </Form>
 </template>
 <script>
     export default {
         data () {
+            const validatePass = (rule, value, callback) => {
+                if (value === '') {
+                    callback(new Error('Please enter your password'));
+                } else {
+                    if (this.formCustom.passwdCheck !== '') {
+                        // 对第二个密码框单独验证
+                        this.$refs.formCustom.validateField('passwdCheck');
+                    }
+                    callback();
+                }
+            };
+            const validatePassCheck = (rule, value, callback) => {
+                if (value === '') {
+                    callback(new Error('Please enter your password again'));
+                } else if (value !== this.formCustom.passwd) {
+                    callback(new Error('The two input passwords do not match!'));
+                } else {
+                    callback();
+                }
+            };
+            const validateAge = (rule, value, callback) => {
+                if (!value) {
+                    return callback(new Error('Age cannot be empty'));
+                }
+                // 模拟异步验证效果
+                setTimeout(() => {
+                    if (!Number.isInteger(value)) {
+                        callback(new Error('Please enter a numeric value'));
+                    } else {
+                        if (value < 18) {
+                            callback(new Error('Must be over 18 years of age'));
+                        } else {
+                            callback();
+                        }
+                    }
+                }, 1000);
+            };
+            
             return {
-                tableData2: this.mockTableData2(),
-                tableColumns2: [],
-                tableColumnsChecked: ['show']
+                formCustom: {
+                    passwd: '',
+                    passwdCheck: '',
+                    age: ''
+                },
+                ruleCustom: {
+                    passwd: [
+                        { validator: validatePass, trigger: 'blur' }
+                    ],
+                    passwdCheck: [
+                        { validator: validatePassCheck, trigger: 'blur' }
+                    ],
+                    age: [
+                        { validator: validateAge, trigger: 'blur' }
+                    ]
+                }
             }
         },
         methods: {
-            mockTableData2 () {
-                let data = [];
-                function getNum() {
-                    // return Math.floor(Math.random () * 10000 + 1);
-                }
-                for (let i = 0; i < 10; i++) {
-                    // data.push({
-                    //     name: 'Name ' + (i+1),
-                    //     fav: 0,
-                    //     show: getNum()
-                    // })
-                }
-                return data;
-            },
-            getTable2Columns () {
-                const table2ColumnList = {
-                    name: {
-                        render: (h, params) => {
-                            const fav = this.tableData2[params.index].fav;
-                            const style = fav === 0 ? {
-                                cursor: 'pointer'
-                            } : {
-                                cursor: 'pointer',
-                                color: '#f50'
-                            };
-
-                            // return h('div', [
-                            //     h('Icon', {
-                            //         style: style,
-                            //         props: {
-                            //             type: fav === 0 ? 'ios-star-outline' : 'ios-star'
-                            //         },
-                            //         nativeOn: {
-                            //             click: () => {
-                            //                 this.toggleFav(params.index);
-                            //             }
-                            //         }
-                            //     }),
-                            //     h('span', ' ' + params.row.name)
-                            // ]);
-                        }
-                    },
-                    show: {
-                        title: 'Show',
-                        key: 'show',
-                        width: 150,
-                        sortable: true
+            handleSubmit (name) {
+                this.$refs[name].validate((valid) => {
+                    if (valid) {
+                        this.$Message.success('Success!');
+                    } else {
+                        this.$Message.error('Fail!');
                     }
-                };
-
-                let data = [table2ColumnList.name];
-
-                this.tableColumnsChecked.forEach(col => data.push(table2ColumnList[col]));
-
-                return data;
+                })
             },
-            changeTableColumns () {
-                this.tableColumns2 = this.getTable2Columns();
-            },
-            toggleFav (index) {
-                this.tableData2[index].fav = this.tableData2[index].fav === 0 ? 1 : 0;
+            handleReset (name) {
+                this.$refs[name].resetFields();
             }
-        },
-        mounted () {
-            this.changeTableColumns();
         }
     }
 </script>
